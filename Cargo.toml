@@ -7,3 +7,5 @@ members = [
     "webserver",
     "wrapper"
 ]
+
+resolver = "2"
