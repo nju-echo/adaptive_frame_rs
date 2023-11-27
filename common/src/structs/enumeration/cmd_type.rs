@@ -1,4 +1,10 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+use std::str::FromStr;
+
+use strum;
+use strum_macros::{Display, EnumString};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum CmdType {
     Reset,
     Start,
@@ -8,36 +14,25 @@ pub enum CmdType {
     Save,
 }
 
-impl CmdType {
-    pub fn from_string(cmd_type_str: &str) -> Result<CmdType, String> {
-        match cmd_type_str.to_lowercase().as_str() {
-            "reset" => Ok(CmdType::Reset),
-            "start" => Ok(CmdType::Start),
-            "stop" => Ok(CmdType::Stop),
-            "pause" => Ok(CmdType::Pause),
-            "load" => Ok(CmdType::Load),
-            "save" => Ok(CmdType::Save),
-            other => Err(format!("No constant with text {} found", other)),
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_from_string() {
-        assert_eq!(CmdType::from_string("Reset").unwrap(), CmdType::Reset);
-        assert_eq!(CmdType::from_string("Start").unwrap(), CmdType::Start);
-        assert_eq!(CmdType::from_string("Stop").unwrap(), CmdType::Stop);
-        assert_eq!(CmdType::from_string("Pause").unwrap(), CmdType::Pause);
-        assert_eq!(CmdType::from_string("Load").unwrap(), CmdType::Load);
-        assert_eq!(CmdType::from_string("Save").unwrap(), CmdType::Save);
-        if let Err(e) = CmdType::from_string("Reset1") {
+        assert_eq!(CmdType::from_str("reset").unwrap(), CmdType::Reset);
+        assert_eq!(CmdType::from_str("start").unwrap(), CmdType::Start);
+        assert_eq!(CmdType::from_str("stop").unwrap(), CmdType::Stop);
+        assert_eq!(CmdType::from_str("pause").unwrap(), CmdType::Pause);
+        assert_eq!(CmdType::from_str("load").unwrap(), CmdType::Load);
+        assert_eq!(CmdType::from_str("save").unwrap(), CmdType::Save);
+
+        if let Err(e) = CmdType::from_str("reset1") {
             println!("{}", e);
         } else {
-            panic!("Should not be able to parse Reset1");
+            panic!("Should not be able to parse reset1");
         }
+
+        println!("{}", CmdType::from_str("reset").unwrap());
     }
 }

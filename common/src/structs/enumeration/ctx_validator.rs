@@ -1,4 +1,10 @@
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+use std::str::FromStr;
+
+use strum;
+use strum_macros::{Display, EnumString};
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum CtxValidator {
     EccImd,
     EccGeas,
@@ -9,21 +15,6 @@ pub enum CtxValidator {
     Infuse,
 }
 
-impl CtxValidator {
-    pub fn from_string(type_str: &str) -> Result<CtxValidator, String> {
-        match type_str.to_lowercase().as_str() {
-            "ecc_imd" => Ok(CtxValidator::EccImd),
-            "ecc_geas" => Ok(CtxValidator::EccGeas),
-            "pcc_imd" => Ok(CtxValidator::PccImd),
-            "pcc_geas" => Ok(CtxValidator::PccGeas),
-            "conc_imd" => Ok(CtxValidator::ConCImd),
-            "conc_geas" => Ok(CtxValidator::ConCGeas),
-            "infuse" => Ok(CtxValidator::Infuse),
-            other => Err(format!("No constant with text {} found", other)),
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -31,37 +22,40 @@ mod tests {
     #[test]
     fn test_from_string() {
         assert_eq!(
-            CtxValidator::from_string("Ecc_imd").unwrap(),
+            CtxValidator::from_str("eccimd").unwrap(),
             CtxValidator::EccImd
         );
         assert_eq!(
-            CtxValidator::from_string("ecC_geas").unwrap(),
+            CtxValidator::from_str("eccgeas").unwrap(),
             CtxValidator::EccGeas
         );
         assert_eq!(
-            CtxValidator::from_string("pcc_imd").unwrap(),
+            CtxValidator::from_str("pccimd").unwrap(),
             CtxValidator::PccImd
         );
         assert_eq!(
-            CtxValidator::from_string("pcc_geas").unwrap(),
+            CtxValidator::from_str("pccgeas").unwrap(),
             CtxValidator::PccGeas
         );
         assert_eq!(
-            CtxValidator::from_string("conC_imd").unwrap(),
+            CtxValidator::from_str("concimd").unwrap(),
             CtxValidator::ConCImd
         );
         assert_eq!(
-            CtxValidator::from_string("conc_Geas").unwrap(),
+            CtxValidator::from_str("concgeas").unwrap(),
             CtxValidator::ConCGeas
         );
         assert_eq!(
-            CtxValidator::from_string("infuse").unwrap(),
+            CtxValidator::from_str("infuse").unwrap(),
             CtxValidator::Infuse
         );
-        if let Err(e) = CtxValidator::from_string("ecc_imd1") {
+
+        if let Err(e) = CtxValidator::from_str("eccimd1") {
             println!("{}", e);
         } else {
-            panic!("Should not be able to parse ecc_imd1");
+            panic!("Should not be able to parse eccimd1");
         }
+
+        println!("{}", CtxValidator::from_str("eccimd").unwrap());
     }
 }

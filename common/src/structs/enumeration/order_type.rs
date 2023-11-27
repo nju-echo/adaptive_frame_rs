@@ -1,17 +1,13 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+use std::str::FromStr;
+
+use strum;
+use strum_macros::{Display, EnumString};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum OrderType {
     Asc,
     Desc,
-}
-
-impl OrderType {
-    pub fn from_string(type_str: &str) -> Result<OrderType, String> {
-        match type_str.to_lowercase().as_str() {
-            "asc" => Ok(OrderType::Asc),
-            "desc" => Ok(OrderType::Desc),
-            other => Err(format!("No constant with text {} found", other)),
-        }
-    }
 }
 
 #[cfg(test)]
@@ -20,12 +16,15 @@ mod tests {
 
     #[test]
     fn test_from_string() {
-        assert_eq!(OrderType::from_string("ASC").unwrap(), OrderType::Asc);
-        assert_eq!(OrderType::from_string("DESC").unwrap(), OrderType::Desc);
-        if let Err(e) = OrderType::from_string("asc1") {
+        assert_eq!(OrderType::from_str("asc").unwrap(), OrderType::Asc);
+        assert_eq!(OrderType::from_str("desc").unwrap(), OrderType::Desc);
+
+        if let Err(e) = OrderType::from_str("asc1") {
             println!("{}", e);
         } else {
             panic!("Should not be able to parse asc1");
         }
+
+        println!("{}", OrderType::from_str("asc").unwrap());
     }
 }
