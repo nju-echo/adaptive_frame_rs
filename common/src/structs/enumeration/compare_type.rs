@@ -1,30 +1,38 @@
 use std::str::FromStr;
 
+use serde::{Deserialize, Serialize};
 use strum;
 use strum_macros::{Display, EnumString};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString, Serialize, Deserialize)]
 #[strum(ascii_case_insensitive)]
 pub enum CompareType {
     #[strum(serialize = "==", serialize = "EQ")]
+    #[serde(alias = "==")]
     EQ,
 
     #[strum(serialize = "!=", serialize = "NE")]
+    #[serde(alias = "!=")]
     NE,
 
     #[strum(serialize = ">", serialize = "GT")]
+    #[serde(alias = ">")]
     GT,
 
     #[strum(serialize = ">=", serialize = "GE")]
+    #[serde(alias = ">=")]
     GE,
 
     #[strum(serialize = "<", serialize = "LT")]
+    #[serde(alias = "<")]
     LT,
 
     #[strum(serialize = "<=", serialize = "LE")]
+    #[serde(alias = "<=")]
     LE,
 
     #[strum(serialize = "in", serialize = "IN")]
+    #[serde(alias = "in")]
     IN,
 }
 
@@ -51,5 +59,15 @@ mod tests {
         }
 
         println!("{}", CompareType::from_str("==").unwrap());
+    }
+
+    #[test]
+    fn test_serialize_and_deserialize() {
+        let compare_type = CompareType::EQ;
+        let serialized = serde_json::to_string(&compare_type).unwrap();
+        assert_eq!(serialized, "\"EQ\"");
+
+        let deserialized: CompareType = serde_json::from_str("\"==\"").unwrap();
+        assert_eq!(deserialized, compare_type);
     }
 }

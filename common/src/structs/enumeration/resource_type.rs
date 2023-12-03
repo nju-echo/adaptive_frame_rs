@@ -1,9 +1,10 @@
 use std::str::FromStr;
 
+use serde::{Deserialize, Serialize};
 use strum;
 use strum_macros::{Display, EnumString};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString, Serialize, Deserialize)]
 #[strum(ascii_case_insensitive)]
 pub enum ResourceType {
     Sensor,

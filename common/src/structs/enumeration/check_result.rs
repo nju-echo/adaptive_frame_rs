@@ -1,9 +1,10 @@
 use std::str::FromStr;
 
+use serde::{Deserialize, Serialize};
 use strum;
 use strum_macros::{Display, EnumString};
 
-#[derive(Debug, Clone, Copy, Display, EnumString, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, Display, EnumString, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[strum(ascii_case_insensitive)]
 pub enum CheckResult {
     InvGenerating,
