@@ -8,7 +8,7 @@ use serde_json::{json, Value};
 
 use crate::structs::enumeration::sensor_data_type::SensorDataType;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub struct SensorData {
     #[serde(default)]
     #[serde(skip_serializing_if = "SensorDataType::is_default")]

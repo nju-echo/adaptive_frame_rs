@@ -22,7 +22,7 @@ impl SynchronousJsonObject {
         }
     }
 
-    pub fn blocktake(&self) -> Option<Value> {
+    pub fn block_take(&self) -> Option<Value> {
         self.queue.take()
     }
 
@@ -58,7 +58,7 @@ mod tests {
         let queue = SynchronousJsonObject::new();
         let item = json!({"name": "test"});
         queue.put(item.clone());
-        assert_eq!(queue.blocktake().unwrap(), item);
+        assert_eq!(queue.block_take().unwrap(), item);
     }
 
     #[test]
@@ -82,7 +82,7 @@ mod tests {
         let queue = SynchronousJsonObject::new();
         let item = json!({"name": "test"});
         queue.put(item.clone());
-        assert_eq!(queue.blocktake().unwrap(), item);
+        assert_eq!(queue.block_take().unwrap(), item);
     }
 
     #[test]

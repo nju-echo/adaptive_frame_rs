@@ -7,7 +7,7 @@ use crate::structs::state::State;
 use crate::structs::value_type::ValueType;
 
 /// ActorInfo used to describe actor and be send to the platform
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Clone)]
 pub struct ActorInfo {
     pub actor_name: Option<Arc<String>>,
     pub value_type: ValueType,

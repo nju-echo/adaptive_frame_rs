@@ -13,7 +13,7 @@ use crate::structs::state::State;
 use crate::structs::value_type::ValueType;
 
 /// SensorInfo used to describe sensor and be send to the platform
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub struct SensorInfo {
     pub sensor_name: Option<Arc<String>>,
     pub value_type: ValueType,

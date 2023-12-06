@@ -6,6 +6,8 @@ use crate::structs::time_node::TimeNode;
 //TODO: whether racing condition is possible
 // when app driver is modifying the time line
 // and ValueThread use value from get_nodes
+// for arrayList is not sync
+// add mutex to ListNode
 
 /// TimeLine is a struct to store the time nodes of all apps
 /// its purpose is to provide a way to find the time node of a specific time with O(logn) time complexity

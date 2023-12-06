@@ -6,7 +6,7 @@ use serde_json::json;
 use crate::structs::state::State;
 
 /// AppInfo used to describe app and be send to the platform
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Clone)]
 pub struct AppInfo {
     pub app_name: Option<Arc<String>>,
     pub ctx: Option<bool>,

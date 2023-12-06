@@ -4,7 +4,7 @@ use serde_json::json;
 use crate::structs::enumeration::resource_type::ResourceType;
 
 ///ResourceConfig used to describe the resource and be send to the platform
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub struct ResourceConfig {
     pub name: Option<String>,
     #[serde(rename = "type")]
