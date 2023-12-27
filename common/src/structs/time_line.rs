@@ -1,23 +1,20 @@
 use std::collections::{BTreeMap, HashMap};
 use std::fmt;
+use std::sync::Arc;
 
 use crate::structs::time_node::TimeNode;
 
-//TODO: whether racing condition is possible
-// when app driver is modifying the time line
-// and ValueThread use value from get_nodes
-// for arrayList is not sync
-// add mutex to ListNode
+//TODO: add an optimistic lock or unsafe to make sure for ownership
 
 /// TimeLine is a struct to store the time nodes of all apps
 /// its purpose is to provide a way to find the time node of a specific time with O(logn) time complexity
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TimeLine<'a> {
-    app_name_to_freq: HashMap<&'a str, u32>,
-    time_nodes_map: BTreeMap<u64, TimeNode<'a>>,
+pub struct TimeLine {
+    app_name_to_freq: HashMap<Arc<String>, u32>,
+    time_nodes_map: BTreeMap<u64, TimeNode>,
 }
 
-impl<'a> TimeLine<'a> {
+impl TimeLine {
     pub fn new() -> Self {
         Self {
             time_nodes_map: BTreeMap::new(),
@@ -26,15 +23,15 @@ impl<'a> TimeLine<'a> {
     }
 
     ///getter
-    pub fn get_app_name_to_freq(&self) -> &HashMap<&'a str, u32> {
+    pub fn get_app_name_to_freq(&self) -> &HashMap<Arc<String>, u32> {
         &self.app_name_to_freq
     }
 
-    pub fn get_nodes(&self) -> &BTreeMap<u64, TimeNode<'a>> {
+    pub fn get_nodes(&self) -> &BTreeMap<u64, TimeNode> {
         &self.time_nodes_map
     }
 
-    pub fn get_time_node_mut(&mut self, time: u64) -> Option<&mut TimeNode<'a>> {
+    pub fn get_time_node_mut(&mut self, time: u64) -> Option<&mut TimeNode> {
         self.time_nodes_map.get_mut(&time)
     }
 
@@ -44,7 +41,7 @@ impl<'a> TimeLine<'a> {
     }
 
     ///insert
-    pub fn insert(&mut self, time: u64, app_name: &'a str) {
+    pub fn insert(&mut self, time: u64, app_name: Arc<String>) {
         if let Some(time_node) = self.time_nodes_map.get_mut(&time) {
             time_node.app_names.push(app_name);
         } else {
@@ -54,9 +51,12 @@ impl<'a> TimeLine<'a> {
     }
 
     ///delete
-    pub fn delete(&mut self, time: u64, app_name: &'a str) {
+    pub fn delete(&mut self, time: u64, app_name: Arc<String>) {
         if let Some(time_node) = self.time_nodes_map.get_mut(&time) {
-            let index = time_node.app_names.iter().position(|&x| x == app_name);
+            let index = time_node
+                .app_names
+                .iter()
+                .position(|x| x.as_str() == app_name.as_str());
             if let Some(index) = index {
                 //TODO: swap_remove or remove depends on the order of the app_names
                 time_node.app_names.remove(index);
@@ -69,35 +69,35 @@ impl<'a> TimeLine<'a> {
     }
 
     ///insert app_name with freq
-    pub fn insert_with_freq(&mut self, app_name: &'a str, freq: u32) {
-        if self.app_name_to_freq.contains_key(app_name) {
-            self.delete_with_freq(app_name, self.app_name_to_freq[app_name]);
+    pub fn insert_with_freq(&mut self, app_name: Arc<String>, freq: u32) {
+        if self.app_name_to_freq.contains_key(&app_name) {
+            self.delete_with_freq(app_name.clone(), self.app_name_to_freq[&app_name]);
         }
 
         let sleep_time: f64 = 1000.0 / freq as f64;
         for i in 1..=freq {
             let time = (i as f64 * sleep_time).round() as u64;
-            self.insert(time, app_name);
+            self.insert(time, app_name.clone());
         }
-        self.app_name_to_freq.insert(app_name, freq);
+        self.app_name_to_freq.insert(app_name.clone(), freq);
     }
 
     ///delete app_name with freq
-    pub fn delete_with_freq(&mut self, app_name: &'a str, freq: u32) {
-        if self.app_name_to_freq.contains_key(app_name) {
+    pub fn delete_with_freq(&mut self, app_name: Arc<String>, freq: u32) {
+        if self.app_name_to_freq.contains_key(&app_name) {
             //TODO: determine whether the freq is the same
-            assert_eq!(self.app_name_to_freq[app_name], freq);
+            assert_eq!(self.app_name_to_freq[&app_name], freq);
             let sleep_time: f64 = 1000.0 / freq as f64;
             for i in 1..=freq {
                 let time = (i as f64 * sleep_time).round() as u64;
-                self.delete(time, app_name);
+                self.delete(time, app_name.clone());
             }
-            self.app_name_to_freq.remove(app_name);
+            self.app_name_to_freq.remove(&app_name);
         }
     }
 }
 
-impl<'a> fmt::Display for TimeLine<'a> {
+impl<'a> fmt::Display for TimeLine {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -122,25 +122,25 @@ mod tests {
     #[test]
     fn test_time_line() {
         let mut time_line = TimeLine::new();
-        time_line.insert(1, "test1");
-        time_line.insert(1, "test2");
-        time_line.insert(2, "test1");
+        time_line.insert(1, Arc::new("test1".to_string()));
+        time_line.insert(1, Arc::new("test2".to_string()));
+        time_line.insert(2, Arc::new("test3".to_string()));
         println!("{}", time_line);
         println!("{}", time_line.size());
         println!("{:?}", time_line.get_nodes());
         println!("{:?}", time_line.get_app_name_to_freq());
         println!("{:?}", time_line.get_time_node_mut(1));
-        time_line.delete(1, "test1");
+        time_line.delete(1, Arc::new("test1".to_string()));
         println!("{}", time_line);
-        time_line.delete(1, "test2");
+        time_line.delete(1, Arc::new("test2".to_string()));
         println!("{}", time_line);
-        time_line.delete(1, "test_none");
+        time_line.delete(1, Arc::new("test3".to_string()));
         println!("{}", time_line);
-        time_line.insert_with_freq("test3", 2);
+        time_line.insert_with_freq(Arc::new("test3".to_string()), 2);
         println!("{}", time_line);
-        time_line.insert_with_freq("test3", 3);
+        time_line.insert_with_freq(Arc::new("test3".to_string()), 3);
         println!("{}", time_line);
-        time_line.delete_with_freq("test3", 3);
+        time_line.delete_with_freq(Arc::new("test3".to_string()), 3);
         println!("{}", time_line);
     }
 
