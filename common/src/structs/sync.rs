@@ -205,7 +205,6 @@ mod tests {
         let queue = Arc::new(queue);
 
         let mut handles = vec![];
-        let handle = 0;
         for i in 0..10 {
             let queue2 = queue.clone();
             let handle = std::thread::spawn(move || {
@@ -249,17 +248,7 @@ mod tests {
         let queue = Arc::new(queue);
 
         let mut handles = vec![];
-        let handle = 0;
         for i in 0..10 {
-            /*let queue2 = queue.clone();
-            let handle = std::thread::spawn(move || {
-                loop{
-                    println!("{:?}", queue2.poll());
-                    println!("{:?}", queue2.poll());
-                    println!("{:?}", queue2.poll());
-                }
-            });*/
-
             let queue2 = queue.clone();
             let handle = std::thread::spawn(move || loop {
                 queue2.put(i);
@@ -267,19 +256,18 @@ mod tests {
             handles.push(handle);
 
             let queue2 = queue.clone();
-            let handle = std::thread::spawn(move || loop {
+            let _ = std::thread::spawn(move || loop {
                 println!("{:?}", queue2.take());
             });
 
             let queue2 = queue.clone();
-            let handle = std::thread::spawn(move || loop {
+            let _ = std::thread::spawn(move || loop {
                 println!("{:?}", queue2.poll_timeout(Duration::from_millis(100)));
             });
         }
-        thread::spawn(|| {
-            thread::sleep(Duration::from_millis(100));
-        })
-        .join();
+
+        thread::sleep(Duration::from_millis(100));
+
         println!("{:?}", queue);
         queue.clear();
         println!("{:?}", queue);

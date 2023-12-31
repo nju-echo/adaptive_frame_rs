@@ -1,7 +1,6 @@
 /// enumeration is a module that contains all the enums used in the project.
 /// all enums impl FromStr and Display trait.
-/// TODO
-/// impl a deserializer for all enums with case insensitive
+//TODO: impl a deserializer for all enums with case insensitive
 pub mod check_result;
 pub mod cmd_type;
 pub mod compare_type;

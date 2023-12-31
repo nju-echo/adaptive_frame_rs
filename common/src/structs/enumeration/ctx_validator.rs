@@ -1,7 +1,4 @@
-use std::str::FromStr;
-
 use serde::{Deserialize, Serialize};
-use strum;
 use strum_macros::{Display, EnumString};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Display, EnumString, Serialize, Deserialize)]
@@ -18,6 +15,8 @@ pub enum CtxValidator {
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]

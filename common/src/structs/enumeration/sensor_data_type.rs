@@ -1,7 +1,4 @@
-use std::str::FromStr;
-
 use serde::{Deserialize, Serialize};
-use strum;
 use strum_macros::{Display, EnumString};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString, Serialize, Deserialize)]
@@ -26,6 +23,8 @@ impl SensorDataType {
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]

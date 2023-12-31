@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use crate::structs::state::State;
 use crate::structs::value_type::ValueType;
@@ -33,6 +32,8 @@ impl ActorInfo {
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
+
     use super::*;
 
     #[test]

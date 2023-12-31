@@ -1,7 +1,4 @@
-use std::str::FromStr;
-
 use serde::{Deserialize, Serialize};
-use strum;
 use strum_macros::{Display, EnumString};
 
 #[derive(Debug, Clone, Copy, Display, EnumString, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -14,6 +11,8 @@ pub enum CheckResult {
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]

@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use crate::structs::state::State;
 
@@ -38,6 +37,8 @@ impl AppInfo {
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
+
     use super::*;
 
     #[test]

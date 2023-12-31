@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, UdpSocket};
+use std::net::{IpAddr, SocketAddr, UdpSocket};
 use std::str;
 use std::sync::Mutex;
 
@@ -58,7 +58,7 @@ pub fn recv(port: u16, timeout: Option<u64>) -> Option<String> {
             let _ = socket.set_read_timeout(None);
         }
 
-        //TODO: clone is time consuming whether need to clone?
+        //question: clone is time consuming whether need to clone?
         //需求上recv是很久才会调用一次，所以不会有性能问题
         socket.try_clone().expect("Failed to clone socket")
     };
@@ -73,8 +73,8 @@ pub fn recv(port: u16, timeout: Option<u64>) -> Option<String> {
     }
 }
 
-//TODO: 先send再recv，recv收不到? answer: 要在recv创建udp socket，否则会收不到
-//TODO： RWLock为了避免写锁饥饿，会导致按顺序调用写锁和读锁？ answer: 使用clone，其实不会有同时的send和recv
+//question: 先send再recv，recv收不到? answer: 要在recv创建udp socket，否则会收不到
+//question： RWLock为了避免写锁饥饿，会导致按顺序调用写锁和读锁？ answer: 使用clone，其实不会有同时的send和recv
 
 #[cfg(test)]
 mod tests {

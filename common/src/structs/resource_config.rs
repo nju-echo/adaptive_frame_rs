@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use crate::structs::enumeration::resource_type::ResourceType;
 
@@ -28,6 +27,8 @@ impl ResourceConfig {
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
+
     use super::*;
 
     #[test]

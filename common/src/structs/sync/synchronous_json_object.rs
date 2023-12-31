@@ -5,7 +5,7 @@ use serde_json::Value;
 use crate::structs::sync::BlockingQueue;
 
 #[derive(Debug)]
-struct SynchronousJsonObject {
+pub struct SynchronousJsonObject {
     queue: BlockingQueue<Value>,
 }
 
@@ -55,7 +55,7 @@ mod tests {
 
     #[test]
     fn test_block_take() {
-        let queue = SynchronousJsonObject::new();
+        let queue = SynchronousJsonObject::new_with_capacity(1);
         let item = json!({"name": "test"});
         queue.put(item.clone());
         assert_eq!(queue.block_take().unwrap(), item);

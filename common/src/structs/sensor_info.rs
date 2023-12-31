@@ -1,13 +1,7 @@
-//Todo
-//lazy_init: failed for fmt use unmut json
-//refactot to be a strong struct by removing jo
-//learn how to parse something Option and how to serialize enum by serde_json
-
-use std::str::FromStr;
+//TODO: should we keep a serde_value to fasten the serialization and deserialization
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
 use crate::structs::state::State;
 use crate::structs::value_type::ValueType;
@@ -42,6 +36,8 @@ impl SensorInfo {
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
+
     use super::*;
 
     #[test]
