@@ -7,9 +7,9 @@ pub enum CmdType {
     Reset,
     Start,
     Stop,
-    Pause,
-    Load,
-    Save,
+    //Pause,
+    //Load,
+    //Save,
 }
 
 #[cfg(test)]
@@ -23,9 +23,9 @@ mod tests {
         assert_eq!(CmdType::from_str("reset").unwrap(), CmdType::Reset);
         assert_eq!(CmdType::from_str("start").unwrap(), CmdType::Start);
         assert_eq!(CmdType::from_str("stop").unwrap(), CmdType::Stop);
-        assert_eq!(CmdType::from_str("pause").unwrap(), CmdType::Pause);
-        assert_eq!(CmdType::from_str("load").unwrap(), CmdType::Load);
-        assert_eq!(CmdType::from_str("save").unwrap(), CmdType::Save);
+        //assert_eq!(CmdType::from_str("pause").unwrap(), CmdType::Pause);
+        //assert_eq!(CmdType::from_str("load").unwrap(), CmdType::Load);
+        //assert_eq!(CmdType::from_str("save").unwrap(), CmdType::Save);
 
         if let Err(e) = CmdType::from_str("reset1") {
             println!("{}", e);
