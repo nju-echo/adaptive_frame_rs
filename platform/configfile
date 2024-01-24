@@ -1,0 +1,14 @@
+{
+  "ctx_server_config": {
+    "server_on": true,
+    "ctx_validator": "ECC+IMD",
+    "base_rule_file": "todo",
+    "base_bfunc_file": "todo",
+    "base_pattern_file": "todo",
+    "base_mfunc_file": "todo"
+  },
+  "tcp_config": {
+    "app_listen_port": 9090,
+    "resource_listen_port": 9091
+  }
+}

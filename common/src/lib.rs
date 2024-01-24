@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 /// common crate
 /// # usage
 /// It is used by crate: app, platform and wrapper
@@ -9,3 +11,5 @@ pub mod socket;
 pub mod structs;
 
 pub mod util;
+
+pub type SyncString = Arc<String>;
