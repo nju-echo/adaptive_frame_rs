@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 
+pub type RwLockOptionResourceType = std::sync::RwLock<Option<ResourceType>>;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display, EnumString, Serialize, Deserialize)]
 #[strum(ascii_case_insensitive)]
 pub enum ResourceType {

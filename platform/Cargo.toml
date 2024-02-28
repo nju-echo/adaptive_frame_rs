@@ -13,3 +13,5 @@ dashmap = "5.5.3"
 common = { path = "../common" }
 serde = { version = "1.0.193", features = ["derive", "rc"] }
 serde_json = { version = "1.0.108", features = [] }
+socket2 = "0.3.19"
+tokei = "13.0.0-alpha.0"

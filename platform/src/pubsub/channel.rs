@@ -8,6 +8,7 @@ use dashmap::mapref::one::Ref;
 use dashmap::{DashMap, DashSet};
 use once_cell::sync::Lazy;
 
+use crate::pubsub::abstract_subscriber::SubscriberId;
 use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
 
 /// #notion
@@ -17,7 +18,7 @@ use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
 /// use index to represent object
 
 /// type
-type SubscriberId = i32;
+
 pub type SubscriberSet = DashSet<SubscriberId>;
 pub type ChannelName = String;
 

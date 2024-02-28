@@ -64,10 +64,7 @@ fn publish_to_group(
                 let channel_name_in = channel_name.clone();
                 let msg_in = msg.clone();
                 thread::spawn(move || {
-                    subscriber
-                        .read()
-                        .expect("read subscriber failed")
-                        .on_message(channel_name_in, msg_in);
+                    subscriber.on_message(channel_name_in, msg_in);
                 });
             }
         }

@@ -23,6 +23,8 @@ pub trait Subscriber: Send + Sync + Display {
     fn get_grp_prio_pair(&self, channel: &str) -> Option<GrpPrioPair>;
 
     ///subscribe to channel
+    /// if group id is none, generate new group id
+    /// if prio id is none, use DEFAULT_PRIO_ID
     fn subscribe(&self, channel: &str, group_id: Option<GroupId>, priority_id: Option<PrioId>);
 
     ///unsubscribe from channel

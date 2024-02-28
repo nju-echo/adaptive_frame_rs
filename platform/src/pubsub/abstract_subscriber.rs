@@ -13,7 +13,8 @@ use crate::pubsub::channel::ChannelName;
 use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
 use crate::pubsub::subscriber::Subscriber;
 
-pub type SharedSubscriber = Arc<RwLock<dyn Subscriber>>;
+pub type SubscriberId = i32;
+pub type SharedSubscriber = Arc<dyn Subscriber>;
 
 /// SUBSCRIBER_OBJS is a static variable that stores all subscribers.
 /// It is a vector of Arc<dyn Subscriber>.
@@ -70,9 +71,9 @@ impl AbstractSubscriber {
     }
 
     ///used outside
-    pub fn add_to_subscriber_objs() -> Arc<RwLock<Self>> {
+    pub fn add_to_subscriber_objs() -> Arc<Self> {
         let mut subscriber_objs = SUBSCRIBER_OBJS.write().expect("get subscriber objs failed");
-        let subscriber = Arc::new(RwLock::new(Self::new(subscriber_objs.len() as i32)));
+        let subscriber = Arc::new(Self::new(subscriber_objs.len() as i32));
         subscriber_objs.push(subscriber.clone());
         subscriber
     }

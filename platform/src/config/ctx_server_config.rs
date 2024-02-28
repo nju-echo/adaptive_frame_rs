@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::resource::sensor_mgr::SensorMgr;
 
 /// CtxServerConfig is a struct that contains the configuration of ctx_server.
-#[derive(Debug, Serialize, Deserialize, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct CtxServerConfig {
     server_on: bool,
     ctx_validator: String,

@@ -1,6 +1,6 @@
 use std::any::type_name;
 use std::fmt::Display;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 use std::thread;
 
 use common::SyncString;
@@ -13,14 +13,14 @@ struct TestSubscriber1 {
 }
 
 impl TestSubscriber1 {
-    pub fn new() -> Arc<RwLock<Self>> {
+    pub fn new() -> Arc<Self> {
         let subscriber_objs = abstract_subscriber::get_objs();
         let mut subscriber_objs = subscriber_objs.write().expect("get subscriber objs failed");
-        let subscriber = Arc::new(RwLock::new(Self {
+        let subscriber = Arc::new(Self {
             abstract_subscriber: abstract_subscriber::AbstractSubscriber::new(
                 subscriber_objs.len() as i32,
             ),
-        }));
+        });
         subscriber_objs.push(subscriber.clone());
         subscriber
     }
@@ -65,14 +65,14 @@ struct TestSubscriber2 {
 }
 
 impl TestSubscriber2 {
-    pub fn new() -> Arc<RwLock<Self>> {
+    pub fn new() -> Arc<Self> {
         let subscriber_objs = abstract_subscriber::get_objs();
         let mut subscriber_objs = subscriber_objs.write().expect("get subscriber objs failed");
-        let subscriber = Arc::new(RwLock::new(Self {
+        let subscriber = Arc::new(Self {
             abstract_subscriber: abstract_subscriber::AbstractSubscriber::new(
                 subscriber_objs.len() as i32,
             ),
-        }));
+        });
         subscriber_objs.push(subscriber.clone());
         subscriber
     }
@@ -117,14 +117,14 @@ struct TestSubscriber3 {
 }
 
 impl TestSubscriber3 {
-    pub fn new() -> Arc<RwLock<Self>> {
+    pub fn new() -> Arc<Self> {
         let subscriber_objs = abstract_subscriber::get_objs();
         let mut subscriber_objs = subscriber_objs.write().expect("get subscriber objs failed");
-        let subscriber = Arc::new(RwLock::new(Self {
+        let subscriber = Arc::new(Self {
             abstract_subscriber: abstract_subscriber::AbstractSubscriber::new(
                 subscriber_objs.len() as i32,
             ),
-        }));
+        });
         subscriber_objs.push(subscriber.clone());
         subscriber
     }
@@ -169,14 +169,14 @@ struct TestSubscriber4 {
 }
 
 impl TestSubscriber4 {
-    pub fn new() -> Arc<RwLock<Self>> {
+    pub fn new() -> Arc<Self> {
         let subscriber_objs = abstract_subscriber::get_objs();
         let mut subscriber_objs = subscriber_objs.write().expect("get subscriber objs failed");
-        let subscriber = Arc::new(RwLock::new(Self {
+        let subscriber = Arc::new(Self {
             abstract_subscriber: abstract_subscriber::AbstractSubscriber::new(
                 subscriber_objs.len() as i32,
             ),
-        }));
+        });
         subscriber_objs.push(subscriber.clone());
         subscriber
     }
@@ -232,23 +232,14 @@ impl Subscriber for TestSubscriber4 {
 fn test_pubsub_simple() {
     let channel_1 = channel::get_channel("channel_1");
     let subscriber_1 = TestSubscriber1::new();
-    subscriber_1
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_1.subscribe("channel_1", None, None);
     let subscriber_2 = TestSubscriber2::new();
-    subscriber_2
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_2.subscribe("channel_1", None, None);
     let subscriber_3 = TestSubscriber3::new();
     let pair = channel_1
-        .get_grp_prio_pair(subscriber_2.read().expect("read subscriber failed").id())
+        .get_grp_prio_pair(subscriber_2.id())
         .expect("get grp prio pair failed");
-    subscriber_3
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
+    subscriber_3.subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
 
     publisher::publish("channel_1", None, None, Arc::new(String::from("hello")));
 
@@ -259,31 +250,19 @@ fn test_pubsub_simple() {
 fn test_pubsub_hard() {
     let channel_1 = channel::get_channel("channel_1");
     let subscriber_1 = TestSubscriber1::new();
-    subscriber_1
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_1.subscribe("channel_1", None, None);
     let subscriber_2 = TestSubscriber2::new();
-    subscriber_2
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_2.subscribe("channel_1", None, None);
     let subscriber_3 = TestSubscriber3::new();
     let pair = channel_1
-        .get_grp_prio_pair(subscriber_2.read().expect("read subscriber failed").id())
+        .get_grp_prio_pair(subscriber_2.id())
         .expect("get grp prio pair failed");
-    subscriber_3
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
+    subscriber_3.subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
     let subscriber_4 = TestSubscriber4::new();
     let pair = channel_1
-        .get_grp_prio_pair(subscriber_3.read().expect("read subscriber failed").id())
+        .get_grp_prio_pair(subscriber_3.id())
         .expect("get grp prio pair failed");
-    subscriber_4
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id));
+    subscriber_4.subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id));
 
     thread::spawn(|| {
         publisher::publish(
@@ -302,49 +281,25 @@ fn test_pubsub_hard() {
 fn test_pub_with_mutil_channel() {
     let channel_1 = channel::get_channel("channel_1");
     let subscriber_1 = TestSubscriber1::new();
-    subscriber_1
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_1.subscribe("channel_1", None, None);
     let subscriber_2 = TestSubscriber2::new();
-    subscriber_2
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", None, None);
+    subscriber_2.subscribe("channel_1", None, None);
     let subscriber_3 = TestSubscriber3::new();
     let pair = channel_1
-        .get_grp_prio_pair(subscriber_2.read().expect("read subscriber failed").id())
+        .get_grp_prio_pair(subscriber_2.id())
         .expect("get grp prio pair failed");
-    subscriber_3
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
+    subscriber_3.subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id + 1));
     let subscriber_4 = TestSubscriber4::new();
     let pair = channel_1
-        .get_grp_prio_pair(subscriber_3.read().expect("read subscriber failed").id())
+        .get_grp_prio_pair(subscriber_3.id())
         .expect("get grp prio pair failed");
-    subscriber_4
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id));
+    subscriber_4.subscribe("channel_1", Some(pair.grp_id), Some(pair.priority_id));
 
     let _channel_2 = channel::get_channel("channel_2");
-    subscriber_1
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_2", None, None);
-    subscriber_2
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_2", None, None);
-    subscriber_3
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_2", None, None);
-    subscriber_4
-        .read()
-        .expect("read subscriber failed")
-        .subscribe("channel_2", None, None);
+    subscriber_1.subscribe("channel_2", None, None);
+    subscriber_2.subscribe("channel_2", None, None);
+    subscriber_3.subscribe("channel_2", None, None);
+    subscriber_4.subscribe("channel_2", None, None);
 
     thread::spawn(|| {
         publisher::publish(

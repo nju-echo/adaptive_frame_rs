@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashMap};
 use std::fmt;
-use std::sync::Arc;
+use std::sync::{Arc, Condvar, Mutex};
 
 use crate::structs::time_node::TimeNode;
 
@@ -8,10 +8,19 @@ use crate::structs::time_node::TimeNode;
 
 /// TimeLine is a struct to store the time nodes of all apps
 /// its purpose is to provide a way to find the time node of a specific time with O(logn) time complexity
+
+pub type SyncCondTimeLine = Arc<(Mutex<TimeLine>, Condvar)>;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TimeLine {
     app_name_to_freq: HashMap<Arc<String>, u32>,
     time_nodes_map: BTreeMap<u64, TimeNode>,
+}
+
+impl Default for TimeLine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TimeLine {

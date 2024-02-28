@@ -24,33 +24,35 @@ fn start_server(addr: &str) -> Result<(), std::io::Error> {
 }
 
 fn handle_client(stream: TcpStream) -> Result<(), std::io::Error> {
-    let mut tcp = AbstractTCP::build(stream, true)?;
+    let mut tcp = AbstractTCP::new(stream, true);
     // Handle communication with the client using `tcp`
     // For example, read a message and echo it back
     let mut buf = [0; 1024];
     let bytes_read = tcp.get_socket().read(&mut buf)?;
     println!(
-        "Server Received message: {}",
-        String::from_utf8_lossy(&buf[..bytes_read])
+        "Server Received message from addr:{} {}",
+        String::from_utf8_lossy(&buf[..bytes_read]),
+        tcp.get_socket().peer_addr().unwrap()
     );
 
     //echo it back
-    tcp.send("Hello, client!")?;
+    tcp.send("Hello, client!");
+    //tcp.recv();
     Ok(())
 }
 
 fn start_client(addr: &str) -> Result<(), std::io::Error> {
     let stream = TcpStream::connect(addr)?;
-    let mut tcp = AbstractTCP::build(stream, true)?;
+    let mut tcp = AbstractTCP::new(stream, false);
 
     //thread spawn
 
+    tcp.send("ss");
     // Send a message to the server
-    tcp.send("Hello, server!")?;
-
+    tcp.send("Hello, server!");
     // Receive a response from the server
-    let response = tcp.recv()?;
-    println!("Received from server: {}", response);
+    let response = tcp.recv();
+    println!("Received from server: {:?}", response);
 
     Ok(())
 }
