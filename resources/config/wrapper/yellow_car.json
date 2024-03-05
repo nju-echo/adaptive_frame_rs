@@ -1,0 +1,9 @@
+{
+  "name": "YellowCar",
+  "type": "Sensor",
+  "fields": [
+    "speed",
+    "longitude",
+    "latitude"
+  ]
+}

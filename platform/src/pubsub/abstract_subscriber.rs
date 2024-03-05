@@ -37,6 +37,10 @@ impl Display for AbstractSubscriber {
 
 ///impl Subscriber for AbstractSubscriber
 impl Subscriber for AbstractSubscriber {
+    fn super_reference(&self) -> &AbstractSubscriber {
+        self
+    }
+
     fn id(&self) -> i32 {
         self.id
     }

@@ -13,7 +13,7 @@ pub struct SensorInfo {
     pub value_type: ValueType,
     pub fields: Arc<Vec<String>>,
     pub state: State,
-    pub apps: Arc<Vec<String>>,
+    pub apps: Vec<Arc<String>>,
 }
 
 impl SensorInfo {
@@ -22,7 +22,7 @@ impl SensorInfo {
         value_type: ValueType,
         fields: Arc<Vec<String>>,
         state: State,
-        apps: Arc<Vec<String>>,
+        apps: Vec<Arc<String>>,
     ) -> Self {
         Self {
             sensor_name,
@@ -47,7 +47,7 @@ mod tests {
             ValueType::String,
             Arc::new(vec!["test".to_string()]),
             State::On,
-            Arc::new(vec!["test".to_string()]),
+            vec![Arc::new("test".to_string())],
         );
 
         let json_str = serde_json::to_string(&sensor_info).unwrap();

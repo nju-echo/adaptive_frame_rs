@@ -4,6 +4,7 @@ use std::sync::{Arc, RwLock, Weak};
 use serde::{Deserialize, Serialize};
 
 use common::structs::sensor_info::SensorInfo;
+use common::structs::state::State;
 use common::structs::time_line::SyncCondTimeLine;
 use common::structs::value_type::ValueType;
 
@@ -100,14 +101,14 @@ impl SensorMgr {
     /// is_alive function
     /// return true if the sensor is alive
     pub fn is_alive(&self) -> bool {
-        todo!()
+        *self.is_alive.read().expect("read is alive fail")
     }
 
     /// set_alive function
     /// set the sensor alive or not
     /// used when register or error
     pub fn set_alive(&self, alive: bool) {
-        todo!()
+        *self.is_alive.write().expect("write is alive fail") = alive;
     }
 
     /// is get value running
@@ -141,7 +142,16 @@ impl SensorMgr {
 
     /// generate sensor information
     pub fn create_sensor_info(&self) -> SensorInfo {
-        todo!()
+        SensorInfo::new(
+            Some(self.sensor_name.clone()),
+            self.sensor_type,
+            self.fields_name.clone(),
+            match self.is_alive() {
+                true => State::On,
+                false => State::Off,
+            },
+            self.get_app_names_vec(),
+        )
     }
 
     //todo: how to implement thread function
@@ -150,6 +160,7 @@ impl SensorMgr {
 
 impl Display for SensorMgr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        let sensor_info = self.create_sensor_info();
+        write!(f, "{}", serde_json::to_string(&sensor_info).unwrap())
     }
 }

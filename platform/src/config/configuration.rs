@@ -51,7 +51,7 @@ pub fn config_analyze(config_file: &Path) {
             }
         },
         Err(e) => {
-            error!("read config file error: {}", e);
+            error!("read config file: {:?} error: {}", config_file, e);
         }
     }
 }

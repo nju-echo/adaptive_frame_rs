@@ -34,10 +34,10 @@ pub static DEFAULT_GRP_ID: i32 = 0;
 pub static DEFAULT_PRIO_ID: i32 = 0;
 
 /// const
-pub const SENSOR_SUFFIX: &str = "<SENSOR>";
-pub const ACTOR_SUFFIX: &str = "<ACTOR>";
-pub const SENSOR_REQUEST_SUFFIX: &str = "<SENSOR_REQUEST>";
-pub const ACTOR_REQUEST_SUFFIX: &str = "<ACTOR_REQUEST>";
+pub const SENSOR_SUFFIX: &str = "<Sensor>";
+pub const ACTOR_SUFFIX: &str = "<Actor>";
+pub const SENSOR_REQUEST_SUFFIX: &str = "<Sensor_Request>";
+pub const ACTOR_REQUEST_SUFFIX: &str = "<Actor_Request>";
 
 impl Channel {
     /// public function

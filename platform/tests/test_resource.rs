@@ -32,19 +32,18 @@ fn test_resource_simple() {
             "latitude".to_string(),
         ]),
     );
+    let message = serde_json::to_value(&config).unwrap();
 
     start_platform_simple();
 
     thread::sleep(std::time::Duration::from_secs(1));
 
     let mut stream = TcpStream::connect("127.0.0.1:9091").unwrap();
-    let cmd_message = CmdMessage::new(
-        Some("register".to_string()),
-        Some(serde_json::to_string(&config).unwrap()),
-    );
+    let cmd_message = CmdMessage::new(Some("register".to_string()), Some(message));
     //should add '\n' to the end of json string
-    let json_str = serde_json::to_string(&cmd_message).unwrap() + "\n";
+    let json_str = cmd_message.to_string() + "\n";
     debug!("{}", json_str);
+    debug!("{}", serde_json::to_string(&cmd_message).unwrap());
 
     stream.write_all(json_str.as_bytes()).unwrap();
     stream.flush().unwrap();

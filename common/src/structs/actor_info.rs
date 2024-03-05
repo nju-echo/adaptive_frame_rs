@@ -11,7 +11,7 @@ pub struct ActorInfo {
     pub actor_name: Option<Arc<String>>,
     pub value_type: ValueType,
     pub state: State,
-    pub apps: Vec<String>,
+    pub apps: Vec<Arc<String>>,
 }
 
 impl ActorInfo {
@@ -19,7 +19,7 @@ impl ActorInfo {
         actor_name: Option<Arc<String>>,
         value_type: ValueType,
         state: State,
-        apps: Vec<String>,
+        apps: Vec<Arc<String>>,
     ) -> Self {
         Self {
             actor_name,
@@ -42,7 +42,7 @@ mod tests {
             Some(Arc::new("test".to_string())),
             ValueType::String,
             State::On,
-            vec!["test".to_string()],
+            vec![Arc::new("test".to_string())],
         );
 
         let json_str = serde_json::to_string(&actor_info).unwrap();

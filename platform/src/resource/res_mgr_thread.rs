@@ -51,7 +51,7 @@ impl ResMgrThread {
         // 锁定直到管理器启动标志达到特定值...
         // Platform::lock_until_mgr_start_flag_equal(3);
 
-        for stream in self.listener.incoming().take(1) {
+        for stream in self.listener.incoming() {
             let stream = stream.unwrap();
             trace!("New resource connection: {}", stream.peer_addr().unwrap());
 

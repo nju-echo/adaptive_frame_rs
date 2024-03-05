@@ -1,4 +1,4 @@
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, Error, Write};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Condvar, Mutex, RwLock};
@@ -25,11 +25,55 @@ pub struct AbstractTCP {
 }
 
 impl TCP for AbstractTCP {
+    fn super_reference(&self) -> &AbstractTCP {
+        self
+    }
+
     fn get_socket(&self) -> &TcpStream {
         &self.socket
     }
 
-    fn send(&self, str: &str) -> bool {
+    fn send_result(&self, str: &str) -> Result<(), Error> {
+        if self.lock_flag.load(Ordering::SeqCst) {
+            let (lock, cvar) = &self.lock;
+            let mut guard = lock.lock().unwrap();
+            while *guard {
+                guard = cvar.wait(guard).unwrap();
+            }
+            *guard = true;
+        }
+
+        let str = str.replace("\n", "//huanhang");
+        match self.buf_out {
+            Some(ref buf_out) => {
+                let mut buf_out = buf_out.write().expect("buf_out write lock failed");
+                buf_out.write_all((str + "\n").as_bytes())?;
+                buf_out.flush()?;
+            }
+            None => {
+                panic!("buf_out is none");
+            }
+        }
+        Ok(())
+    }
+
+    fn recv_result(&self) -> Result<String, Error> {
+        let mut buf = String::new();
+        match self.buf_in {
+            Some(ref buf_in) => {
+                buf_in
+                    .write()
+                    .expect("buf_in write lock failed")
+                    .read_line(&mut buf)?;
+            }
+            None => {
+                panic!("buf_in is none");
+            }
+        }
+        Ok(buf.replace("//huanhang", "\n"))
+    }
+
+    /*fn send(&self, str: &str) -> bool {
         if self.lock_flag.load(Ordering::SeqCst) {
             let (lock, cvar) = &self.lock;
             let mut guard = lock.lock().unwrap();
@@ -45,7 +89,9 @@ impl TCP for AbstractTCP {
                 let mut buf_out = buf_out.write().expect("buf_out write lock failed");
                 match buf_out.write_all((str + "\n").as_bytes()) {
                     Ok(_) => match buf_out.flush() {
-                        Ok(_) => true,
+                        Ok(_) => {
+                            true
+                            }
                         Err(_) => {
                             self.send_err_handle();
                             false
@@ -89,7 +135,7 @@ impl TCP for AbstractTCP {
 
         self.unlock();
         ret
-    }
+    }*/
 
     fn close(&self) {
         match self.socket.shutdown(std::net::Shutdown::Both) {

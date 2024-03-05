@@ -1,17 +1,18 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 use crate::socket::cmd_message::CmdMessage;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CmdMessageGrpIds {
     pub cmd: Option<String>,
-    pub message: Option<String>,
+    pub message: Option<Value>,
     #[serde(rename = "grpIds")]
     pub grp_ids: Option<Vec<i32>>,
 }
 
 impl CmdMessageGrpIds {
-    pub fn new(cmd: Option<String>, message: Option<String>, grp_ids: Option<Vec<i32>>) -> Self {
+    pub fn new(cmd: Option<String>, message: Option<Value>, grp_ids: Option<Vec<i32>>) -> Self {
         Self {
             cmd,
             message,
@@ -43,7 +44,7 @@ mod tests {
     fn test_serialize_and_deserialize() {
         let cmd_message_grp_ids = CmdMessageGrpIds::new(
             Some("test".to_string()),
-            Some("test".to_string()),
+            Some(serde_json::json!("test")),
             Some(vec![1, 2, 3]),
         );
 
@@ -64,7 +65,8 @@ mod tests {
 
     #[test]
     fn test_new_with_cmd_message() {
-        let cmd_message = CmdMessage::new(Some("test".to_string()), Some("test".to_string()));
+        let cmd_message =
+            CmdMessage::new(Some("test".to_string()), Some(serde_json::json!("test")));
         let cmd_message_grp_ids =
             CmdMessageGrpIds::new_with_cmd_message(cmd_message, Some(vec![1, 2, 3]));
         println!("{:?}", cmd_message_grp_ids);

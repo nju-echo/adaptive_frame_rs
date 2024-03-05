@@ -1570,3 +1570,13 @@ checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
 [[package]]
 name = "wrapper"
 version = "0.1.0"
+dependencies = [
+ "common",
+ "env_logger 0.10.1",
+ "log",
+ "once_cell",
+ "serde",
+ "serde_json",
+ "socket2",
+ "tokei",
+]

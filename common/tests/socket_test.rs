@@ -1,4 +1,3 @@
-use std::io::Read;
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 
@@ -27,11 +26,12 @@ fn handle_client(stream: TcpStream) -> Result<(), std::io::Error> {
     let mut tcp = AbstractTCP::new(stream, true);
     // Handle communication with the client using `tcp`
     // For example, read a message and echo it back
-    let mut buf = [0; 1024];
-    let bytes_read = tcp.get_socket().read(&mut buf)?;
+    //let mut buf = [0; 1024];
+    //let bytes_read = tcp.get_socket().read(&mut buf)?;
+    let buf_read = tcp.recv();
     println!(
         "Server Received message from addr:{} {}",
-        String::from_utf8_lossy(&buf[..bytes_read]),
+        buf_read.unwrap(),
         tcp.get_socket().peer_addr().unwrap()
     );
 

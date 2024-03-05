@@ -34,9 +34,13 @@ mod tests {
     #[test]
     fn test_serialize_and_deserialize() {
         let resource_config = ResourceConfig::new(
-            Some("test".to_string()),
+            Some("YellowCar".to_string()),
             ResourceType::Sensor,
-            Some(vec!["test".to_string()]),
+            Some(vec![
+                "speed".to_string(),
+                "longitude".to_string(),
+                "latitude".to_string(),
+            ]),
         );
 
         let json_str = serde_json::to_string(&resource_config).unwrap();
