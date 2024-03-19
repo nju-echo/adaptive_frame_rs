@@ -8,9 +8,11 @@ use std::sync::{Arc, RwLock};
 use dashmap::DashMap;
 use once_cell::sync::Lazy;
 
+use common::socket::cmd_message_grp_ids::GroupId;
+
 use crate::pubsub::channel;
 use crate::pubsub::channel::ChannelName;
-use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
+use crate::pubsub::grp_prio_pair::{GrpPrioPair, PrioId};
 use crate::pubsub::subscriber::Subscriber;
 
 pub type SubscriberId = i32;

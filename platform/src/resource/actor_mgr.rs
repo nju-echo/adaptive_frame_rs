@@ -1,13 +1,14 @@
 use std::fmt::Display;
 use std::sync::{Arc, RwLock, Weak};
 
+use dashmap::DashSet;
 use serde::{Deserialize, Serialize};
 
 use common::structs::actor_info::ActorInfo;
 use common::structs::state::State;
 use common::structs::value_type::ValueType;
 
-use crate::app::app_mgr::{SyncAppMgr, SyncAppName, WeakAppMap};
+use crate::app::app_mgr::{SyncAppMgr, SyncAppName, SyncAppNameSet};
 use crate::resource::sensor_mgr::SensorMgr;
 use crate::resource::RwlockAlive;
 
@@ -18,6 +19,7 @@ pub type SyncActorMgr = Arc<ActorMgr>;
 pub type SyncActorName = Arc<String>;
 pub type WeakActorMgr = Weak<SensorMgr>;
 pub type RwLockOptionSyncActorMgr = RwLock<Option<SyncActorMgr>>;
+pub type SyncActorNameSet = DashSet<SyncActorName>;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActorMgr {
@@ -29,7 +31,7 @@ pub struct ActorMgr {
     #[serde(default = "default_is_alive")]
     is_alive: RwlockAlive,
     #[serde(skip)]
-    apps: WeakAppMap,
+    apps: SyncAppNameSet,
 }
 
 fn default_actor_type() -> ValueType {
@@ -65,7 +67,7 @@ impl ActorMgr {
 
     /// get apps
     /// may leak information
-    pub fn get_apps(&self) -> &WeakAppMap {
+    pub fn get_apps(&self) -> &SyncAppNameSet {
         todo!()
     }
 

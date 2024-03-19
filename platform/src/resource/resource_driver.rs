@@ -16,13 +16,12 @@ use common::SyncString;
 
 use crate::pubsub::abstract_subscriber::SubscriberId;
 use crate::pubsub::channel::{get_actor_request, get_sensor_request};
-use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
 use crate::pubsub::subscriber::Subscriber;
 use crate::pubsub::{abstract_subscriber, publisher};
 use crate::resource::actor_mgr::{ActorMgr, RwLockOptionSyncActorMgr};
 use crate::resource::res_mgr_thread::RES_MGR_THREAD;
 use crate::resource::resource_driver::device_driver_tcp::DeviceDriverTCP;
-use crate::resource::sensor_mgr::{RwLockOptionSyncSensorMgr, SensorMgr, SyncSensorMgr};
+use crate::resource::sensor_mgr::{RwLockOptionSyncSensorMgr, SensorMgr};
 
 pub mod device_driver_tcp;
 
@@ -74,7 +73,11 @@ impl ResourceDriver {
             .set_resource_driver_weak(&resource_driver);
         trace!(
             "New resource connection: {} add to subscriber objs success",
-            resource_driver.tcp.get_socket().peer_addr().unwrap()
+            resource_driver
+                .tcp
+                .get_socket()
+                .peer_addr()
+                .expect("get peer addr fail")
         );
         resource_driver
     }
@@ -308,7 +311,7 @@ impl ResourceDriver {
         Self::register_actor(driver.clone(), device_name.clone(), joo);
     }
 
-    fn on_message_handle(&self, channel: SyncString, msg: SyncString) {
+    fn on_message_handle(&self, _channel: SyncString, msg: SyncString) {
         let resource_name_and_type = format!(
             "{}<{}>",
             self.device_name

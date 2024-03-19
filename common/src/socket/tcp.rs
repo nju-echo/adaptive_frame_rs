@@ -52,6 +52,11 @@ pub trait TCP {
         match self.recv_result() {
             Ok(s) => {
                 self.unlock();
+                if s.is_empty() {
+                    //todo: 特判不够robust，如果真的是空字符串，那么就会出现问题
+                    error!("recv error: recv empty string, remote close connection.");
+                    return None;
+                }
                 Some(s)
             }
             Err(e) => {
@@ -62,9 +67,7 @@ pub trait TCP {
             }
         }
     }
-    fn close(&self) {
-        self.super_reference().close();
-    }
+    fn close(&self);
     fn callback(&self) {
         self.super_reference().callback();
     }

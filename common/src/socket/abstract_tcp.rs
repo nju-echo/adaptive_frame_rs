@@ -1,9 +1,8 @@
 use std::io::{BufRead, BufReader, BufWriter, Error, Write};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Condvar, Mutex, RwLock};
+use std::sync::{Condvar, Mutex, RwLock};
 
-use log::{error, log, trace};
 use socket2::Socket;
 
 use crate::socket::tcp::TCP;
@@ -33,6 +32,7 @@ impl TCP for AbstractTCP {
         &self.socket
     }
 
+    //todo:将一个结构体使用serdejson转变成jsonstring时，会自动加换行吗
     fn send_result(&self, str: &str) -> Result<(), Error> {
         if self.lock_flag.load(Ordering::SeqCst) {
             let (lock, cvar) = &self.lock;
@@ -65,6 +65,7 @@ impl TCP for AbstractTCP {
                     .write()
                     .expect("buf_in write lock failed")
                     .read_line(&mut buf)?;
+                buf = buf.trim_end_matches('\n').to_string();
             }
             None => {
                 panic!("buf_in is none");
@@ -164,7 +165,7 @@ impl TCP for AbstractTCP {
     }
 }
 
-const KEEPALIVE_TIME: u64 = (2 * 60 * 60);
+const KEEPALIVE_TIME: u64 = 2 * 60 * 60;
 
 impl AbstractTCP {
     pub fn new(socket: TcpStream, lock_flag: bool) -> Self {
@@ -176,9 +177,9 @@ impl AbstractTCP {
 
         //socket.set_nodelay(true);
         let lock = if lock_flag {
-            (Mutex::new((false)), Condvar::new())
+            (Mutex::new(false), Condvar::new())
         } else {
-            (Mutex::new((false)), Condvar::new()) // You might want to handle this differently in Rust.
+            (Mutex::new(false), Condvar::new()) // You might want to handle this differently in Rust.
         };
 
         let mut out = None;
@@ -224,7 +225,7 @@ impl AbstractTCP {
         }
     }
 
-    fn send_err_handle(&self) {
+    /*fn send_err_handle(&self) {
         self.callback();
         self.unlock();
         match self.socket.shutdown(std::net::Shutdown::Both) {
@@ -243,5 +244,5 @@ impl AbstractTCP {
                 log::error!("shutdown tcp error while recv err handling : {}", e);
             }
         }
-    }
+    }*/
 }

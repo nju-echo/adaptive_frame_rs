@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
-pub type GroupId = i32;
+use common::socket::cmd_message_grp_ids::GroupId;
+
 pub type PrioId = i32;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]

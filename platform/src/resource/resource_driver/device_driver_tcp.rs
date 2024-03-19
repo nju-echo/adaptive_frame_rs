@@ -1,7 +1,5 @@
-use std::io::Error;
 use std::net::TcpStream;
-use std::ptr::read;
-use std::sync::{Arc, RwLock, Weak};
+use std::sync::{Arc, RwLock};
 
 use log::{error, trace};
 
@@ -9,7 +7,7 @@ use common::socket::abstract_tcp::AbstractTCP;
 use common::socket::tcp::TCP;
 use common::structs::enumeration::resource_type::ResourceType;
 
-use crate::resource::resource_driver::{ResourceDriver, SyncResourceDriver, WeakResourceDriver};
+use crate::resource::resource_driver::{SyncResourceDriver, WeakResourceDriver};
 
 //todo: resource_driver和device_driver_tcp的依赖关系对吗？
 // 感觉得反过来，device_driver_tcp应该依赖resource_driver,所以RwLock<Option<DeviceDriverTcp>>应该给resource_driver
@@ -45,6 +43,19 @@ impl DeviceDriverTCP {
 impl TCP for DeviceDriverTCP {
     fn super_reference(&self) -> &AbstractTCP {
         &self.abstract_tcp
+    }
+
+    fn close(&self) {
+        match self
+            .super_reference()
+            .get_socket()
+            .shutdown(std::net::Shutdown::Both)
+        {
+            Ok(_) => {}
+            Err(e) => {
+                panic!("shutdown tcp error while close : {}", e);
+            }
+        }
     }
 
     //TODO: HOW TO INVOKE IT JUST LIKE JAVA INTERFACE CALLBACK

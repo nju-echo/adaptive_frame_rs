@@ -1,9 +1,10 @@
 use std::fmt::Display;
 
+use common::socket::cmd_message_grp_ids::GroupId;
 use common::SyncString;
 
 use crate::pubsub::abstract_subscriber::AbstractSubscriber;
-use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
+use crate::pubsub::grp_prio_pair::{GrpPrioPair, PrioId};
 
 pub trait Subscriber: Send + Sync + Display {
     fn super_reference(&self) -> &AbstractSubscriber;

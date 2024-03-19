@@ -10,6 +10,8 @@ use crate::structs::time_node::TimeNode;
 /// its purpose is to provide a way to find the time node of a specific time with O(logn) time complexity
 
 pub type SyncCondTimeLine = Arc<(Mutex<TimeLine>, Condvar)>;
+pub type FrequencyType = u32;
+pub type TimeType = u64;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TimeLine {
@@ -36,6 +38,7 @@ impl TimeLine {
         &self.app_name_to_freq
     }
 
+    //todo: may be need to modify
     pub fn get_nodes(&self) -> &BTreeMap<u64, TimeNode> {
         &self.time_nodes_map
     }

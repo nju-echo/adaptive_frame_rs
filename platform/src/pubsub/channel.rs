@@ -8,8 +8,10 @@ use dashmap::mapref::one::Ref;
 use dashmap::{DashMap, DashSet};
 use once_cell::sync::Lazy;
 
+use common::socket::cmd_message_grp_ids::GroupId;
+
 use crate::pubsub::abstract_subscriber::SubscriberId;
-use crate::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
+use crate::pubsub::grp_prio_pair::{GrpPrioPair, PrioId};
 
 /// #notion
 /// in rust default Eq and Hash is based on content of struct

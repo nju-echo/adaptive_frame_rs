@@ -3,8 +3,9 @@ use std::fmt::Display;
 use std::sync::Arc;
 use std::thread;
 
+use common::socket::cmd_message_grp_ids::GroupId;
 use common::SyncString;
-use platform::pubsub::grp_prio_pair::{GroupId, GrpPrioPair, PrioId};
+use platform::pubsub::grp_prio_pair::{GrpPrioPair, PrioId};
 use platform::pubsub::subscriber::Subscriber;
 use platform::pubsub::*;
 

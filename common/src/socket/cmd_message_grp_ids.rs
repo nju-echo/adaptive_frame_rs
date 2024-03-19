@@ -3,6 +3,8 @@ use serde_json::Value;
 
 use crate::socket::cmd_message::CmdMessage;
 
+pub type GroupId = i32;
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CmdMessageGrpIds {
     pub cmd: Option<String>,

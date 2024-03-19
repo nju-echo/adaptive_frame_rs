@@ -3,10 +3,11 @@ use std::thread;
 
 use dashmap::DashMap;
 
+use common::socket::cmd_message_grp_ids::GroupId;
 use common::SyncString;
 
 use crate::pubsub::channel::SubscriberSet;
-use crate::pubsub::grp_prio_pair::{GroupId, PrioId};
+use crate::pubsub::grp_prio_pair::PrioId;
 use crate::pubsub::{abstract_subscriber, channel};
 
 /// publish

@@ -1,6 +1,7 @@
 use std::fmt::Display;
 use std::sync::{Arc, RwLock, Weak};
 
+use dashmap::DashSet;
 use serde::{Deserialize, Serialize};
 
 use common::structs::sensor_info::SensorInfo;
@@ -8,7 +9,7 @@ use common::structs::state::State;
 use common::structs::time_line::SyncCondTimeLine;
 use common::structs::value_type::ValueType;
 
-use crate::app::app_mgr::{SyncAppName, WeakAppMap};
+use crate::app::app_mgr::{SyncAppName, SyncAppNameSet};
 use crate::resource::sensor_mgr::value_thread::RwLockOptionValueThread;
 use crate::resource::RwlockAlive;
 
@@ -22,6 +23,7 @@ pub type SyncSensorMgr = Arc<SensorMgr>;
 pub type SyncSensorName = Arc<String>;
 pub type WeakSensorMgr = Weak<SensorMgr>;
 pub type RwLockOptionSyncSensorMgr = RwLock<Option<SyncSensorMgr>>;
+pub type SyncSensorNameSet = DashSet<SyncSensorName>;
 
 //todo: should add a Mutex and condvar to timeline
 // it can be a bottleneck although it only has a thread read and many thread rare write
@@ -46,7 +48,7 @@ pub struct SensorMgr {
     #[serde(skip)]
     get_value_thread: RwLockOptionValueThread,
     #[serde(skip)]
-    apps: WeakAppMap,
+    apps: SyncAppNameSet,
     /// share data with value thread
     #[serde(skip)]
     time_line: SyncCondTimeLine,
@@ -119,6 +121,7 @@ impl SensorMgr {
             .is_some()
     }
 
+    // todo: should with sync
     /// start get value
     pub fn start_get_value(&self) {
         todo!()
@@ -131,7 +134,7 @@ impl SensorMgr {
 
     /// get apps
     /// todo: may add more other function instead of use it
-    pub fn get_apps(&self) -> &WeakAppMap {
+    pub fn get_apps(&self) -> &SyncAppNameSet {
         todo!()
     }
 

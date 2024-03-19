@@ -35,6 +35,10 @@ impl TCP for WrapperRemoteConnectorTCP {
         &self.abstract_tcp
     }
 
+    fn close(&self) {
+        self.super_reference().close();
+    }
+
     fn callback(&self) {
         info!(
             "[{}]: TCP connection is broken.",
